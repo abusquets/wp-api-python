@@ -38,6 +38,7 @@ try:
 except ImportError:
     from ordereddict import OrderedDict
 
+import sys
 
 
 class Auth(object):
@@ -209,6 +210,10 @@ class OAuth(Auth):
 
         # print "\nstring_to_sign: %s" % repr(string_to_sign)
         # print "\nkey: %s" % repr(key)
+        if sys.version_info[0] == 3:
+            key = str.encode(key)
+            string_to_sign = str.encode(string_to_sign)
+
         sig = HMAC(key, string_to_sign, hmac_mod)
         sig_b64 = binascii.b2a_base64(sig.digest())[:-1]
         # print "\nsig_b64: %s" % sig_b64
@@ -460,7 +465,7 @@ class OAuth_3Leg(OAuth):
         }
         try:
             login_form_action, login_form_data = self.get_form_info(login_form_response, 'loginform')
-        except AssertionError, exc:
+        except AssertionError as exc:
             self.parse_login_form_error(
                 login_form_response, exc, **login_form_params
             )
@@ -481,7 +486,7 @@ class OAuth_3Leg(OAuth):
         confirmation_response = authorize_session.post(login_form_action, data=login_form_data, allow_redirects=True)
         try:
             authorize_form_action, authorize_form_data = self.get_form_info(confirmation_response, 'oauth1_authorize_form')
-        except AssertionError, exc:
+        except AssertionError as exc:
             self.parse_login_form_error(
                 confirmation_response, exc, **login_form_params
             )

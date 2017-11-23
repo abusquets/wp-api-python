@@ -22,6 +22,11 @@ from collections import OrderedDict
 
 from bs4 import BeautifulSoup
 
+import sys
+
+if sys.version_info[0] == 3:
+    from functools import reduce
+
 
 class StrUtils(object):
     @classmethod
